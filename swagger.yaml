@@ -9,7 +9,6 @@ tags:
 - name: "board"
 - name: "task"
 schemes:
-- "https"
 - "http"
 paths:
   /board:
