@@ -1,0 +1,286 @@
+swagger: "2.0"
+info:
+  description: "This is API is used to maintain a Kanban dashboard. Various tasks can be created using this API and can be assigned to a specific Kanban board.\n The API is secured with oAuth2. Hence you should be an authorized user and should have proper roles to access different operations.\n User and role details has been defined in below mentioned git location."
+  version: "1.0.0"
+  title: "Kanban Dashboard"
+  contact:
+    email: "pramod.panda@wipro.com"
+host: "localhost:9191"
+basePath: "/kanban"
+tags:
+- name: "board"
+- name: "task"
+schemes:
+- "https"
+- "http"
+paths:
+  /board:
+    post:
+      tags:
+      - "board"
+      summary: "Adds a new kanban board"
+      operationId: "addBoard"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Board details to be created. ID is optional."
+        required: true
+        schema:
+          $ref: "#/definitions/Board"
+      responses:
+        201:
+          description: "Board created successfully"
+        500:
+          description: "Board creeation failed"
+      security:
+      - kanban_auth:
+        - "write:board"
+    put:
+      tags:
+      - "board"
+      summary: "Update an existing board"
+      description: ""
+      operationId: "updateBoard"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Board object to be updated. ID is mandatory. If not passed, a new board will be created."
+        required: true
+        schema:
+          $ref: "#/definitions/Board"
+      responses:
+        200:
+          description: "Board updated"
+        400:
+          description: "Invalid ID supplied"
+        500:
+          description: "Board update failed"
+      security:
+      - kanban_auth:
+        - "write:board"
+  /board/{id}:
+    get:
+      tags:
+      - "board"
+      summary: "Finds Board by board id"
+      operationId: "findBoardById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of board to get"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "success response"
+          schema:
+              $ref: "#/definitions/Board"
+        404:
+          description: "Board not found"
+      security:
+      - kanban_auth:
+        - "read:board"
+        - "read:task"
+    delete:
+      tags:
+      - "board"
+      summary: "Deletes a board"
+      operationId: "deleteBoard"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of board to delete"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Board deleted"
+        400:
+          description: "Invalid ID supplied"
+      security:
+      - kanban_auth:
+        - "delete:board"
+        - "delete:task"
+  /task:
+    post:
+      tags:
+      - "task"
+      summary: "Creates a task"
+      operationId: "addTask"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Task details to be created"
+        required: true
+        schema:
+          $ref: "#/definitions/Task"
+      responses:
+        201:
+          description: "Task created successfully"
+        500:
+          description: "Task creeation failed"
+      security:
+      - kanban_auth:
+        - "write:task"
+        - "read:task" 
+    put:
+      tags:
+      - "task"
+      summary: "Update an existing task"
+      operationId: "updateTask"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Task object to be updated. ID is mandatory. If not passed, it will create a new task."
+        required: true
+        schema:
+          $ref: "#/definitions/Task"
+      responses:
+        200:
+          description: "Board updated"
+        400:
+          description: "Invalid ID supplied"
+        500:
+          description: "Board update failed"
+      security:
+      - kanban_auth:
+        - "write:task"
+        - "read:task"
+  /tasks:
+    get:
+      tags:
+      - "task"
+      summary: "Finds All tasks"
+      operationId: "findAllTasks"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "success response"
+          schema:
+              $ref: "#/definitions/Task"
+      security:
+      - kanban_auth:
+        - "read:task"
+  /task/{id}:
+    get:
+      tags:
+      - "task"
+      summary: "Finds task by task id"
+      operationId: "findTaskById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of task to get"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "success response"
+          schema:
+              $ref: "#/definitions/Task"
+        404:
+          description: "Task not found"
+      security:
+      - kanban_auth:
+        - "read:task"
+    delete:
+      tags:
+      - "task"
+      summary: "Deletes a task"
+      operationId: "deleteTask"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of board to delete"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Task deleted"
+        400:
+          description: "Invalid ID supplied"
+      security:
+      - kanban_auth:
+        - "delete:task"    
+  
+  
+securityDefinitions:
+  kanban_auth:
+    type: "oauth2"
+    tokenUrl: http://localhost:8181/oauth/token
+    flow: "password"
+    scopes:
+      write:board: "Access to modify a board"
+      write:task: "Access to modify a task"
+      read:board: "Access to read a board"
+      read:task: "Access to read a task"
+      delete:board: "Access to delete a board"
+      delete:task: "Access to delete a task"
+definitions:
+  Board:
+    type: "object"
+    required:
+    - "title"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+      title:
+        type: "string"
+        example: "Kanban Board" 
+  Task:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+      priority:
+        type: "string"
+        example: "critical"
+      details:
+        type: "string"
+        example: "Task Details"  
+      boardId:
+        type: "integer"
+        format: "int64" 
+        example: 1
+      asignee:
+        type: "string"
+        example: "Pramod" 
+      status:
+        type: "string"
+        example: "WIP"  
+externalDocs:
+  description: "Git repository of API"
+  url: "https://github.com/pramod5551/kanban-board"
