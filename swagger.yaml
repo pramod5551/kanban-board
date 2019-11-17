@@ -3,8 +3,6 @@ info:
   description: "This is API is used to maintain a Kanban dashboard. Various tasks can be created using this API and can be assigned to a specific Kanban board.\n The API is secured with oAuth2. Hence you should be an authorized user and should have proper roles to access different operations.\n User and role details has been defined in below mentioned git location."
   version: "1.0.0"
   title: "Kanban Dashboard"
-  contact:
-    email: "pramod.panda@wipro.com"
 host: "localhost:9191"
 basePath: "/kanban"
 tags:
