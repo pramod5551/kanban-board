@@ -1,0 +1,31 @@
+server:
+  port: 9191
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    #url: jdbc:h2:mem:mydb
+    #driver-class-name: org.h2.Driver
+    #username: sa
+    #password: password
+    url: jdbc:mysql://localhost:3306/kanban?createDatabaseIfNotExist=true
+    username: root
+    password: Password
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    hibernate:
+      ddl-auto: update
+    #database-platform: org.hibernate.dialect.H2Dialect
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  application:
+    name: kanban-board
+security:
+  oauth2:
+    resource:
+      token-info-uri: http://localhost:8181/oauth/check_token
+    client:
+      client-id: kanban_admin
+      client-secret: kanban_admin
