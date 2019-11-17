@@ -25,6 +25,11 @@ To test it through Swagger:
 2. Authorise the API by clicking the 'Authorize' button and provide the required details as mentioned below.
 3. After authorisation, test the operations as applicable for the acquired scope(s).
 
+To test it through Postman: 
+1. import the [postman collection](https://github.com/pramod5551/kanban-board/blob/master/KanbanBoard.postman_collection.json "KanbanBoard.postman_collection.json"). 
+2. Use the /auth/token request in the collection to fetch the token from the authorisation server. Provide the grant_type, username and password in the x-www-form-urlencoded in the body and application client details(as mentioned below) in basic authentication.
+3. Use the bearer token in the Authorization section to hit the desired request.
+
 ## Authorisation Details
 
 There are three in-memory users been created.
